@@ -1,0 +1,6 @@
+<?php
+
+$DB_CONFIG_FILE="/var/www/html/includes/db.inc.php"
+ 
+ 
+?>

@@ -1,0 +1,13 @@
+<?php
+/**
+*	This file displays an error page
+*	@author Deepthi
+*	@package default
+*	
+*/
+
+include 'utilities/errors.php';
+	$errormessage=getErrorMessage();
+	echo $errormessage;
+
+?>

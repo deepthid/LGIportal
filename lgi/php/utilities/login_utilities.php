@@ -17,9 +17,9 @@ require $root.'/lgi/lgi.config.php';
 //$DB_CONFIG_FILE is set by the administrator. Hence check whether the file exists or not. If file doesnot exists we cannot access database. Hence report error!
 if(!file_exists($DB_CONFIG_FILE))
 {
-	//User given path to the DB_configuration file is invalid. Generate an error.
+	//given path to the DB_configuration file is invalid. Generate an error.
 	error_log("Error: in lgi.config.php: File not found ".$DB_CONFIG_FILE);
-	//Redirect to an error page
+	//Redirect to an error page. Set an error message. This message is seen by user.
 	setErrorMessage("Server Error.");
 	header("Location: /lgi/php/error.php");
 	
@@ -40,6 +40,7 @@ require $DB_CONFIG_FILE;
 		if(!mysql_select_db($mysql_dbname, $connection))
 		{
 			error_log("Error:".mysql_error());
+			//Set and error message and redirect to an error page. This message is seen by user.
                 	setErrorMessage("Server Error.");
 			header("Location: /lgi/php/error.php");
 		}
@@ -52,6 +53,7 @@ require $DB_CONFIG_FILE;
 		$result=mysql_query($query);
                 if (!$result) {                
                 	error_log("Error:".mysql_error());
+                	//Set and error message and redirect to an error page. This message is seen by user.
                 	setErrorMessage("Server Error.");
 			header("Location: /lgi/php/error.php");
                 }

@@ -18,8 +18,8 @@
 	}
 
 	/**
-	*	Clear previous session and sets a new session. Usefull when a user login. The username of user logged in should be passed.
-	*	@param string $user username of the user logged in	
+	* Clear previous session and sets a new session. Usefull when a user login. The username of user logged in should be passed.
+	* @param string $user username of the user logged in	
 	*/
 	function setValidSession($user)
 	{

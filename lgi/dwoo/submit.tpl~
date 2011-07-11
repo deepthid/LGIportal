@@ -1,29 +1,13 @@
-<html>
-<link rel="stylesheet" href="css/layout.css" type="text/css" media="screen" />
+{*
+	The template for submiting a job. It extends the homs_base.tpl. The heading, menus, footer are same as base template. Only the content is changed. 
+*}
 
-	<body>
-		
-
-	<div id="container">
-	<div id="header">
-		<h1>
-			LGI Portal
-		</h1>
-	</div>
-	<div id="navigation">
-		<ul>
-			<li><a href="submit.php">Submit Job</a></li>
-			<li><a href="logout.php">Logout</a></li>
-			
-		</ul>		
-		
-	</div>
-	<div id="content-container">
-		<div id="content">
+{extends "home_base.tpl"}
+{block "content"}
 			<h2>
 				Welcome to LGI portal !
 			</h2>
-			<p>
+			
 				<form action="php/submitjob.php" method="post" class="cmxform">				
 				<fieldset>
 				<ol>
@@ -47,21 +31,11 @@
         			 	</li>
         			 	
         			 	<li>
-        			 		<input type="submit" value="Login" />
+        			 		<input type="submit" value="Submit Job" />
         			 	</li>
         			 </ol>
 				</fieldset>
 				</form>
-			</p>
 			
-				
-		</div>
-		<div id="aside">			
-		</div>
-		<div id="footer">
-			Copyright 2011
-		</div>
-	</div>
-</div>
-
-</html> 
+			
+{/block}

@@ -1,6 +1,7 @@
-{*
-	The template for submiting a job. It extends the homs_base.tpl. The heading, menus, footer are same as base template. Only the content is changed. 
-*}
+{*****************************************************************************************
+ *	The template for submiting a job. It extends the homs_base.tpl. 
+ * 	The heading, menus, footer are same as base template. Only the content is changed. 
+ *****************************************************************************************}
 
 {extends "home_base.tpl"}
 {block "content"}

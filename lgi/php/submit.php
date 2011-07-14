@@ -1,26 +1,39 @@
-<?php 
+<?php
 
 /**
- * This is the page a user sees after logging in.
- * @author Deepthi 
+ * This is the page for submitting a job.
+ * @author Deepthi
  */
- 
- /**
-  *
-  */
-include 'Dwoo/dwooAutoload.php';
-include 'utilities/sessions.php';
-include 'utilities/login_utilities.php';
 
-	session_start();
-	//authenticate User. If user is not logged in, request for log in.
-	authenticateUser();
-		
-	//Display home page
-	$dwoo = new Dwoo(); 
-	$data=new Dwoo_Data();
-	$data->assign('user',$_SESSION['user']);
-        $dwoo->output('../dwoo/submit.tpl', new Dwoo_Data());      
-	
+/**
+ *
+ */
+include 'Dwoo/dwooAutoload.php';
+require_once 'utilities/sessions.php';
+require_once 'utilities/login_utilities.php';
+require_once 'utilities/jobs.php';
+require_once 'utilities/data.php';
+
+session_start();
+//authenticate User. If user is not logged in, request for log in.
+authenticateUser();
+
+if(!isset($_POST['submitrequest']))
+{
+	//display form
+	$dwoo = new Dwoo();
+	$data= createDwooData();
+	$dwoo->output('../dwoo/submit.tpl', $data);
+}
+else //request for submit job.
+{
+	$dwoo = new Dwoo();
+	$data=createDwooData();
+	$output=submitJob();	
+	$data->assign('message',$output);
+	$dwoo->output('../dwoo/submitsuccess.tpl', $data);
+
+}
+
 
 ?>

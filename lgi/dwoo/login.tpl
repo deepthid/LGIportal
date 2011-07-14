@@ -21,6 +21,9 @@
 			<h2>
 				Welcome to LGI portal !
 			</h2>
+			<div id="error">
+				<p> {$errormessage} </p>
+			</div>
 			<p>
 				<form action="php/login.php" method="post" class="cmxform">
 				

@@ -2,8 +2,11 @@
 /**
  * This file handles user login. 
  * @author Deepthi
- * @package default
  */
+ 
+ /**
+  *
+  */
 // Include the main class, the rest will be automatically loaded
 include 'Dwoo/dwooAutoload.php';
 include 'utilities/login_utilities.php';
@@ -28,12 +31,12 @@ include 'utilities/sessions.php';
 			//Create a new session for the user
 			setValidSession($user);	
 			//user has logged in. Got to home		
-			header("Location: home.php");
+			//header("Location: home.php");
                 }
                 else
                 {
                 	//Username or password does not match a valid user. So request for relogin.
-			relogin();				
+			//relogin();				
                 }
 	}
 ?>

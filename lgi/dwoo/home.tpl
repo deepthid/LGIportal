@@ -6,4 +6,5 @@
 			<p>
 				You are now logged into LGI portal.
 			</p>
+			
 {/block}

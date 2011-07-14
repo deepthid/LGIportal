@@ -6,4 +6,7 @@
 			<p>
 				You are now logged into LGI portal.
 			</p>
+			<div id="error">
+			WELCOME!
+			</div>
 {/block}

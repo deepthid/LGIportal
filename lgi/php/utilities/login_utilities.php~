@@ -11,17 +11,18 @@
 
 //include necessary files
 $root=realpath($_SERVER["DOCUMENT_ROOT"]);
-include $root.'/lgi/php/utilities/errors.php';
+include __DIR__.'/errors.php';
 //include the global configration file. It contains $DB_CONFIG_FILE which is the file that has database access details. 
-require $root.'/lgi/lgi.config.php';
+//require $root.'/lgi/lgi.config.php';
+require __DIR__.'/../../lgi.config.php';
 //$DB_CONFIG_FILE is set by the administrator. Hence check whether the file exists or not. If file doesnot exists we cannot access database. Hence report error!
 if(!file_exists($DB_CONFIG_FILE))
 {
 	//given path to the DB_configuration file is invalid. Generate an error.
 	error_log("Error: in lgi.config.php: File not found ".$DB_CONFIG_FILE);
 	//Redirect to an error page. Set an error message. This message is seen by user.
-	setErrorMessage("Server Error.");
-	header("Location: /lgi/php/error.php");
+	setErrorMessage("Server Configuration Error.");
+	showErrorPage();
 	
 }
 //include the file having database access details
@@ -40,9 +41,9 @@ require $DB_CONFIG_FILE;
 		if(!mysql_select_db($mysql_dbname, $connection))
 		{
 			error_log("Error:".mysql_error());
-			//Set and error message. This message is seen by user
+			//Set an error message and redirect to an error page. This message is seen by user.
                 	setErrorMessage("Server Error.");
-			header("Location: /lgi/php/error.php");
+			showErrorPage();
 		}
 		
 		//validate username and password for preventing SQL injection
@@ -53,8 +54,9 @@ require $DB_CONFIG_FILE;
 		$result=mysql_query($query);
                 if (!$result) {                
                 	error_log("Error:".mysql_error());
+                	//Set an error message and redirect to an error page. This message is seen by user.
                 	setErrorMessage("Server Error.");
-			header("Location: /lgi/php/error.php");
+			showErrorPage();
                 }
                 
                 $row= mysql_fetch_row($result);	
@@ -62,7 +64,7 @@ require $DB_CONFIG_FILE;
                 if($row)	//if there is a record in the database for the user
 		{
 			$password_hash=$row[0];
-			$salt=$row[1];
+			$salt=$row[1];			
 			return(strcmp(hashPassword($password,$salt),$password_hash)==0);	//check whether passwords match
 				
 		} 
@@ -80,7 +82,8 @@ require $DB_CONFIG_FILE;
 	 */
 	function hashPassword($password,$salt)	
 	{
-		return md5($password.$salt);
+		//return md5($password.$salt);
+		return hash("sha512",$password.$salt);
 	}
 	
 	/**
@@ -88,7 +91,7 @@ require $DB_CONFIG_FILE;
 	 */
 	function relogin()
 	{	
-		header("Location: ".$root."/lgi/index.php");
+		header("Location: ".__DIR__."/../../index.php");
 	}
 
 	/**

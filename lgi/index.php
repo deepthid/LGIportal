@@ -3,6 +3,7 @@
 // Include the main class, the rest will be automatically loaded
 include 'Dwoo/dwooAutoload.php';
 include 'php/utilities/sessions.php';
+require_once 'php/utilities/data.php';
 
 session_start();
 if(checkValidSession()) //if already logged in redirect it to home
@@ -12,8 +13,8 @@ if(checkValidSession()) //if already logged in redirect it to home
 }
 else
 {
-	$dwoo = new Dwoo(); 
-	$dwoo->output('dwoo/login.tpl',new Dwoo_Data());
+	$dwoo =new Dwoo();
+	$dwoo->output('dwoo/login.tpl',createDwooData());
 }
 	
 ?>

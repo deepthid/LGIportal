@@ -51,6 +51,17 @@
 	background: #FFF url(layoutbg.gif) repeat-y 68% 0;
 }
 
+#error
+{
+     clear: left;
+     color: red;
+     text-align: left;
+     width: 60%;
+	 padding: 20px 0;
+	 margin: 0 0 0 4%;
+	 display: inline;
+}
+
 #content
 {
 	clear: left;
@@ -81,6 +92,14 @@
 	text-align: right;
 	padding: 20px;
 	height: 1%;
+}
+
+#error
+{
+     clear: left;
+     color: red;
+     text-align: left;
+
 }
 
 /***************************/

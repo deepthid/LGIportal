@@ -1,4 +1,6 @@
 <?php
+
+require dirname(__FILE__).'/../../lgi.config.php';
 /**
 *	This file has utility functions for error handling
 *	@author Deepthi
@@ -13,6 +15,19 @@ function setErrorMessage($msg)
 {
 	session_start();
 	$_SESSION["ErrorMessage"]=$msg;
+}
+
+/**
+ *	Appends an error message. This function can be called before it is redirected to error page. getErrorMessage() can be called to see the error message.
+ * 	@param string $msg Error message
+ */
+function pushErrorMessage($msg)
+{
+	session_start();
+	if(!isset($_SESSION["ErrorMessage"]))
+	    $_SESSION["ErrorMessage"]="Error: <br>".$msg;
+	else
+	    $_SESSION["ErrorMessage"]=$_SESSION["ErrorMessage"]."<br>".$msg;
 }
 
 /**
@@ -35,5 +50,10 @@ function clearErrorMessage()
 {
 	session_start();
 	unset($_SESSION["ErrorMessage"]);
+}
+
+function showErrorPage()
+{
+     header("Location: "._LGI_ROOT_."/php/error.php");
 }
 ?>

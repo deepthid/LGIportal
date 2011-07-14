@@ -11,6 +11,7 @@
 include 'Dwoo/dwooAutoload.php';
 include 'utilities/sessions.php';
 include 'utilities/login_utilities.php';
+require_once 'utilities/data.php';
 
 	session_start();
 	//authenticate User. If user is not logged in, request for log in.
@@ -18,9 +19,8 @@ include 'utilities/login_utilities.php';
 		
 	//Display home page
 	$dwoo = new Dwoo(); 
-	$data=new Dwoo_Data();
-	$data->assign('user',$_SESSION['user']);
-        $dwoo->output('../dwoo/home.tpl', new Dwoo_Data());      
+	$data=createDwooData();	
+    $dwoo->output('../dwoo/home.tpl', $data);      
 	
 
 ?>

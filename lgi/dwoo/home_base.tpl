@@ -19,15 +19,19 @@
 	<div id="navigation">
 		{block "menu"}
 		<ul>
-			<li><a href="#">Submit Job</a></li>
-			<li><a href="#">Delete Job</a></li>
-			<li><a href="#">View Job</a></li>			
+			<li><a href="home.php">Home</a></li>
+			<li><a href="submit.php">Submit Job</a></li>
+			<li><a href="delete.php">Delete Job</a></li>
+			<li><a href="viewjob.php">View Job</a></li>			
 			<li><a href="logout.php">Logout</a></li>
 			
 		</ul>
 		{/block}
 	</div>
 	<div id="content-container">
+		<div id="error">
+		<p> {$errormessage} </p>
+		</div>
 		<div id="content">
 		{block "content"}
 			<h2>

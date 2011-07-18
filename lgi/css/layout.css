@@ -44,6 +44,10 @@
 
 #navigation li a:hover { background: #383; }
 
+#user
+{
+	float: right;	
+}
 #content-container
 {
 	float: left;
@@ -94,13 +98,6 @@
 	height: 1%;
 }
 
-#error
-{
-     clear: left;
-     color: red;
-     text-align: left;
-
-}
 
 /***************************/
 

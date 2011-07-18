@@ -22,7 +22,7 @@ if(!file_exists($DB_CONFIG_FILE))
 	//given path to the DB_configuration file is invalid. Generate an error.
 	error_log("Error: in lgi.config.php: File not found ".$DB_CONFIG_FILE);
 	//Redirect to an error page. Set an error message. This message is seen by user.
-	setErrorMessage("Server Configuration Error.");
+	setErrorMessage("Server Configuration Error. Please report to web-administrator.");
 	showErrorPage();
 
 }
@@ -43,7 +43,7 @@ function verifyUserPassword($user,$password)	//input plain text username and pas
 	{
 		error_log("Error:".mysql_error());
 		//Set an error message and redirect to an error page. This message is seen by user.
-		setErrorMessage("Server Error.");
+		setErrorMessage("Server Error. Please contact web administrator");
 		showErrorPage();
 	}
 
@@ -56,7 +56,7 @@ function verifyUserPassword($user,$password)	//input plain text username and pas
 	if (!$result) {
 		error_log("Error:".mysql_error());
 		//Set an error message and redirect to an error page. This message is seen by user.
-		setErrorMessage("Server Error.");
+		setErrorMessage("Server Error. Please contact web administrator.");
 		showErrorPage();
 	}
 
@@ -117,31 +117,42 @@ function authenticateUser()
  */
 function getCertificateFile($user)
 {
-	global $mysql_server,$mysql_user,$mysql_password,$mysql_dbname;
-	$connection = mysql_connect($mysql_server, $mysql_user, $mysql_password) or die(mysql_error());
-	if(!mysql_select_db($mysql_dbname, $connection))
-	{
-		error_log("Error:".mysql_error());
-		//Set an error message and redirect to an error page. This message is seen by user.
-		setErrorMessage("Server Error.");
-		showErrorPage();
-	}
-	$username=mysql_real_escape_string($user); //$user will already be escaped. But this is for extra safety
-	$query="SELECT certificate FROM Users WHERE userId='".$username."'";
-	$result=mysql_query($query);
-	if (!$result) {
-		error_log("Error:".mysql_error());
-		//Set an error message and redirect to an error page. This message is seen by user.
-		setErrorMessage("Server Error.");
-		showErrorPage();
-	}
-
-	$row= mysql_fetch_row($result);
-	mysql_close($connection);
-	//if there is a record in the database for the user	
-	if($row)
-		return $row[0];
-	else return NULL;	
+        if(strcmp($_SESSION['user'],$user)==0)
+        {
+          if(isset($_SESSION['certificate']))          //if reference to certificate is set in session, no need to query database
+               return $_SESSION['certificate'];
+               
+          global $mysql_server,$mysql_user,$mysql_password,$mysql_dbname;
+          $connection = mysql_connect($mysql_server, $mysql_user, $mysql_password) or die(mysql_error());
+          if(!mysql_select_db($mysql_dbname, $connection))
+          {
+                    error_log("Error:".mysql_error());
+                    //Set an error message and redirect to an error page. This message is seen by user.
+                    setErrorMessage("Server Error.");
+                    showErrorPage();
+          }
+          $username=mysql_real_escape_string($user); //$user will already be escaped. But this is for extra safety
+          $query="SELECT certificate FROM Users WHERE userId='".$username."'";
+          $result=mysql_query($query);
+          if (!$result) {
+                    error_log("Error:".mysql_error());
+                    //Set an error message and redirect to an error page. This message is seen by user.
+                    setErrorMessage("Server Error.");
+                    showErrorPage();
+          }
+     
+          $row= mysql_fetch_row($result);
+          mysql_close($connection);
+          //if there is a record in the database for the user	
+          if($row)
+          {
+                    $_SESSION['certificate']=$row[0];       //save the reference certificate in session. so next time you dont have to query database again.
+                    return $row[0];
+          }
+          else return NULL;
+        }
+        else
+          return NULL;	
 }
 
 /**
@@ -151,30 +162,102 @@ function getCertificateFile($user)
  */
 function getKeyFile($user)
 {
-	global $mysql_server,$mysql_user,$mysql_password,$mysql_dbname;
-	$connection = mysql_connect($mysql_server, $mysql_user, $mysql_password) or die(mysql_error());
-	if(!mysql_select_db($mysql_dbname, $connection))
-	{
-		error_log("Error:".mysql_error());
-		//Set an error message and redirect to an error page. This message is seen by user.
-		setErrorMessage("Server Error.");
-		showErrorPage();
-	}
-	$username=mysql_real_escape_string($user); //$user will already be escaped. But this is for extra safety
-	$query="SELECT userkey FROM Users WHERE userId='".$username."'";
-	$result=mysql_query($query);
-	if (!$result) {
-		error_log("Error:".mysql_error());
-		//Set an error message and redirect to an error page. This message is seen by user.
-		setErrorMessage("Server Error.");
-		showErrorPage();
-	}
+        if(strcmp($_SESSION['user'],$user)==0)
+        {
+          if(isset($_SESSION['key']))          //if reference to key is set in session, no need to query database
+               return $_SESSION['key'];
+          global $mysql_server,$mysql_user,$mysql_password,$mysql_dbname;
+          $connection = mysql_connect($mysql_server, $mysql_user, $mysql_password) or die(mysql_error());
+          if(!mysql_select_db($mysql_dbname, $connection))
+          {
+                    error_log("Error:".mysql_error());
+                    //Set an error message and redirect to an error page. This message is seen by user.
+                    setErrorMessage("Server Error.");
+                    showErrorPage();
+          }
+          $username=mysql_real_escape_string($user); //$user will already be escaped. But this is for extra safety
+          $query="SELECT userkey FROM Users WHERE userId='".$username."'";
+          $result=mysql_query($query);
+          if (!$result) {
+                    error_log("Error:".mysql_error());
+                    //Set an error message and redirect to an error page. This message is seen by user.
+                    setErrorMessage("Server Error.");
+                    showErrorPage();
+          }
+     
+          $row= mysql_fetch_row($result);
+          mysql_close($connection);
+          //if there is a record in the database for the user	
+          if($row)
+          {
+                    $_SESSION['key']=$row[0];       //save the reference key in session. so next time you dont have to query database again.
+                    return $row[0];
+          }
+        }
+        else
+          return NULL;	
+}         
 
-	$row= mysql_fetch_row($result);
-	mysql_close($connection);
-	//if there is a record in the database for the user	
-	if($row)
-		return $row[0];
-	else return NULL;	
+/**
+ * Authenticate using HTTP DIGEST authentication
+ * @return true if successfully authenticated
+ */
+function authenticateDigest()
+{
+          $realm = 'Restricted area';
+     
+     //user => password
+     //TODO: Instead use a database to store usernames and passwords(plain text) 
+     $users = array('admin' => 'mypass', 'deepthi' => 'deep1');
+     
+     
+     if (empty($_SERVER['PHP_AUTH_DIGEST'])) {
+     header('HTTP/1.1 401 Unauthorized');
+     header('WWW-Authenticate: Digest realm="'.$realm.
+               '",qop="auth",nonce="'.uniqid().'",opaque="'.md5($realm).'"');
+          //return false;
+     die('Text to send if user hits Cancel button');
+     }
+     
+     
+     // analyze the PHP_AUTH_DIGEST variable
+     if (!($data = http_digest_parse($_SERVER['PHP_AUTH_DIGEST'])) ||
+     !isset($users[$data['username']]))
+     {
+          die('Wrong Credentials!');
+             // return false;
+     }
+     
+     
+     // generate the valid response
+     //TODO: instead of $users[$data['username']], get password by querying database
+     $A1 = md5($data['username'] . ':' . $realm . ':' . $users[$data['username']]);
+     $A2 = md5($_SERVER['REQUEST_METHOD'].':'.$data['uri']);
+     $valid_response = md5($A1.':'.$data['nonce'].':'.$data['nc'].':'.$data['cnonce'].':'.$data['qop'].':'.$A2);
+     
+     if ($data['response'] != $valid_response)
+     die('Wrong Credentials!');
+     setValidSession($data['username']);
+     return true;
+
+}
+     
+     /**
+      * function to parse the http auth header. To be used by authenticateDigest()
+      */
+function http_digest_parse($txt)
+{
+     // protect against missing data
+     $needed_parts = array('nonce'=>1, 'nc'=>1, 'cnonce'=>1, 'qop'=>1, 'username'=>1, 'uri'=>1, 'response'=>1);
+     $data = array();
+     $keys = implode('|', array_keys($needed_parts));
+     
+     preg_match_all('@(' . $keys . ')=(?:([\'"])([^\2]+?)\2|([^\s,]+))@', $txt, $matches, PREG_SET_ORDER);
+     
+     foreach ($matches as $m) {
+          $data[$m[1]] = $m[3] ? $m[3] : $m[4];
+          unset($needed_parts[$m[1]]);
+     }     
+     return $needed_parts ? false : $data;
 }
 ?>

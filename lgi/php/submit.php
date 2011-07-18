@@ -29,8 +29,17 @@ else //request for submit job.
 {
 	$dwoo = new Dwoo();
 	$data=createDwooData();
-	$output=submitJob();	
-	$data->assign('message',$output);
+	$output=submitJob();
+		
+        $data->assign('jobId',$output['jobId']);
+	$data->assign('jobStatus',$output['jobStatus']);
+	$data->assign('application',$output['application']);
+	$data->assign('target',$output['target']);
+	$data->assign('jobOwner',$output['jobOwner']);
+	$data->assign('readAccess',$output['readAccess']);
+	
+	//$data->assign('message',$output);
+	
 	$dwoo->output('../dwoo/submitsuccess.tpl', $data);
 
 }

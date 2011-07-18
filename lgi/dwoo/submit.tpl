@@ -33,9 +33,9 @@
         			 	<li>
         			 		<label for="jobspecifics">Job Specifics:</label> <input type="text" name="jobspecifics" id="jobspecifics" /> <br/>
         			 	</li>
-        			 	<li>
+        			 	{*** <li>
         			 		<label for="file">File Upload</label> <input type="file" name="file" id="file" /> <br/>
-        			 	</li>
+        			 	</li> (temporarily removed) **}
         			 	
         			 	<li>
         			 		<input type="submit" value="Submit Job" />

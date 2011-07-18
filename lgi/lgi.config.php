@@ -8,7 +8,9 @@
 * $DB_CONFIG_FILE - Absolute Path to file where Database access details are specified. Expecting a php file.
 */
 $DB_CONFIG_FILE="/var/www/html/lgi/php/includes/db.inc.php";
-define('_LGI_ROOT_',"/lgi/");
 $CA_FILE="/var/local/home/apache/lgikey/ca.crt";
+
+define('_AUTH_MECHANISM_',"DATABASE");  //Possible "DATABASE","DIGEST"
+define('_LGI_ROOT_',"/lgi/");
  
 ?>

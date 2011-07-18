@@ -25,20 +25,36 @@ if(checkValidSession())
 }
 else   //authenticate user
 {
+     $valid=false;
+     if(strcmp(_AUTH_MECHANISM_,"DATABASE")==0)
+     {
 	$user=strip_tags($_POST['name']); //HTML tags are stripped for preventing cross site scripting. $user is later stored in session.
 	$paswd=$_POST['password'];
-	if(verifyUserPassword($user,$paswd))
-	{
-		//Create a new session for the user
-		setValidSession($user);
-		//user has logged in. Got to home
-		header("Location: home.php");
-	}
-	else
-	{
-		//Username or password does not match a valid user. So request for relogin.
-		pushErrorMessage("Invalid username or password. Try Again.");
-		relogin();
-	}
+	$valid=verifyUserPassword($user,$paswd);
+	setValidSession($user);
+	
+     }
+     else if(strcmp(_AUTH_MECHANISM_,"DIGEST")==0)
+     {    
+          $valid=authenticateDigest();
+     }
+     else
+     {
+          error_log("Configuration Error: Invalid Authentication Mechanism in lgi.config.php");
+          pushErrorMessage("Server Configuration Error. Please contact server administrator");
+          showErrorPage(); 
+     }
+
+     if($valid)
+     { 	
+	//user has logged in. Got to home
+	header("Location: home.php");
+     }
+     else
+     {
+	//Username or password does not match a valid user. So request for relogin.
+	pushErrorMessage("Invalid username or password. Try Again.");
+	relogin();
+     }
 }
 ?>

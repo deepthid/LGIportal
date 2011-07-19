@@ -1,0 +1,30 @@
+{extends "home_base.tpl"}
+{block "content"}
+			<table border="1">
+                         <tr>
+                         <th>Job ID</th>
+                         <td>{$jobId}</td>
+                         </tr>
+                         <tr>
+                         <th>Application</th>
+                         <td>{$application}</td>
+                         </tr>
+                         <tr>
+                         <td>State</td>
+                         <td>{$jobStatus}</td>
+                         </tr>
+                         <tr>
+                         <td>Owners</td>
+                         <td>{$jobOwner}</td>
+                         </tr>
+                         <tr>
+                         <td>Read Access</td>
+                         <td>{$readAccess}</td>
+                         </tr>
+                          <tr>
+                         <td>Target Resources</td>
+                         <td>{$target}</td>
+                         </tr>
+                         </table>
+			
+{/block}

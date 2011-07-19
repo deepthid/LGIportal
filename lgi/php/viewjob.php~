@@ -1,0 +1,37 @@
+<?php
+/**
+ * This is the page for viewing a job details.
+ * @author Deepthi
+ */
+
+/**
+ *
+ */
+include 'Dwoo/dwooAutoload.php';
+require_once 'utilities/sessions.php';
+require_once 'utilities/login_utilities.php';
+require_once 'utilities/jobs.php';
+require_once 'utilities/data.php';
+
+session_start();
+//authenticate User. If user is not logged in, request for log in.
+authenticateUser();
+
+if(!isset($_POST['submitrequest']))
+{
+	//display form
+	$dwoo = new Dwoo();
+	$data= createDwooData();
+	$dwoo->output('../dwoo/viewjob.tpl', $data);
+}
+else //request for submit job.
+{
+	$dwoo = new Dwoo();
+	$data=createDwooData();
+	$output=viewJob();	
+	$data->assign('message',$output);
+	$dwoo->output('../dwoo/jobdetails.tpl', $data);
+
+}
+
+?>

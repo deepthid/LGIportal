@@ -71,10 +71,10 @@ function submitJob()
 		}
 		if($errorset==ErrorType::EXECERROR)
 		{
-			if($newjob->parseResults())
-			  pushErrorMessage($newjob->getErrorMessage());
-			else
-			  pushErrorMessage("Could not submit job. Execution Error :". $newjob->getResults());
+			/*if($newjob->parseResults())
+			  pushErrorMessage($newjob->getResults()->getErrorMessage());
+			else*/
+			  pushErrorMessage("Could not submit job. Execution Error :". $newjob->getResponseString());
 			//redirect to the form with error message					
 			header("Location: submit.php");
 		}
@@ -140,7 +140,7 @@ function deleteJob()
 		if($errorset==ErrorType::EXECERROR)
 		{
 			
-			pushErrorMessage("Could not Delete job. Execution Error :". $newjob->getResponseString());
+			pushErrorMessage("Could not Delete job. Execution Error :". $newjob->getResults()->getErrorMessage());
 			//redirect to the form with error message					
 			header("Location: delete.php");
 		}
@@ -195,9 +195,9 @@ function viewJob()
 		if($errorset==ErrorType::EXECERROR)
 		{
 		        if($newjob->parseResults())
-			  pushErrorMessage($newjob->getErrorMessage());
+			 		 pushErrorMessage($newjob->getResults()->getErrorMessage());
 			else
-			  pushErrorMessage("Execution Error :". $newjob->getResults());
+			  pushErrorMessage("Execution Error :". $newjob->getResponseString());
 			//showErrorPage();
 			//redirect to the form with error message					
 			header("Location: viewjob.php");
@@ -261,7 +261,7 @@ function listJobs()
 		        if($newjob->parseResults())
 			  pushErrorMessage($newjob->getErrorMessage());
 			else
-			  pushErrorMessage("Execution Error :". $newjob->getResults());
+			  pushErrorMessage("Execution Error :". $newjob->getResults()->getErrorMessage());
 			//showErrorPage();
 			//redirect to the form with error message					
 			header("Location: home.php");
@@ -279,7 +279,7 @@ function listJobs()
 		$output[$j]['application']=$jobs[$i]->getapplication();
 		$output[$j]['target']=$jobs[$i]->getTargetResources();
 		$output[$j]['jobOwner']= $jobs[$i]->getOwners();
-		$output[$j]['readAccess']= $jobs[$i]->getReadAccess();
+		$output[$j]['readAccess']= $jobs[$i]->getReadAccess();		
 		$j=$j+1;
 	}
 	return $output;

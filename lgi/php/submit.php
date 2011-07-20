@@ -31,7 +31,7 @@ else //request for submit job.
 	$data=createDwooData();
 	$output=submitJob();
 		
-        $data->assign('jobId',$output['jobId']);
+    $data->assign('jobId',$output['jobId']);
 	$data->assign('jobStatus',$output['jobStatus']);
 	$data->assign('application',$output['application']);
 	$data->assign('target',$output['target']);

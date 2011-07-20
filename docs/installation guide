@@ -1,0 +1,59 @@
+How to deploy LGI portal
+-----------------------
+
+Requirements
+        1. Apache webserver
+        2. PHP
+        3. Dwoo
+                http://dwoo.org/                
+        4. Pear XML_Serializer package
+                http://pear.php.net/package/XML_Serializer/redirected
+        5. MySQL
+        
+        
+Step 1:- Setting up database
+----------------------------
+        1. Require two tables
+                a. For user account details. 
+                        Table name- users
+                        +--------------+--------------+------+-----+---------+-------+
+                        | Field        | Type         | Null | Key | Default | Extra |
+                        +--------------+--------------+------+-----+---------+-------+
+                        | userId       | varchar(20)  | NO   | PRI | NULL    |       | 
+                        | passwordHash | varchar(150) | YES  |     | NULL    |       | 
+                        | salt         | varchar(50)  | YES  |     | NULL    |       | 
+                        +--------------+--------------+------+-----+---------+-------+
+                        
+                        Passwords should hashed with salt using sha512 algorithm before storing in database.
+                        
+                        If authentication mechanism is http authentication (See Step 2.3)
+                        the table should be 
+                         +--------------+--------------+------+-----+---------+-------+
+                        | Field        | Type         | Null | Key | Default | Extra |
+                        +--------------+--------------+------+-----+---------+-------+
+                        | userId       | varchar(20)  | NO   | PRI | NULL    |       | 
+                        | password     | varchar(20)  | YES  |     | NULL    |       | 
+                        +--------------+--------------+------+-----+---------+-------+
+                        Here password should be plaintext
+                        
+                b. For user certificates and keys
+                        Table name- usercertificates
+                        +-------------+--------------+------+-----+---------+-------+
+                        | Field       | Type         | Null | Key | Default | Extra |
+                        +-------------+--------------+------+-----+---------+-------+
+                        | userId      | varchar(20)  | NO   | PRI | NULL    |       | 
+                        | certificate | varchar(100) | YES  |     | NULL    |       | 
+                        | userkey     | varchar(100) | YES  |     | NULL    |       | 
+                        +-------------+--------------+------+-----+---------+-------+
+                        
+        2. Configure database access details in php/includes/db.inc.php
+                If you want to place db.inc.php in a more secure place, configure the new path in lgi.config.php
+
+Step 2:- Configuring the application
+-----------------------------------
+        1. Copy lgi/ folder to the webroot.
+        2. If lgi/ is copied to subdirectories in webroot, change _LGI_ROOT_ in lgi.config.php
+        
+        3. Set authentication mechanism in lgi.config.php. Currently two methods are available. One using http digest authentication and other form based username-password mechanism.
+        4. Set $CA_FILE to the CA certificate to be used in communication with lgi project server.
+

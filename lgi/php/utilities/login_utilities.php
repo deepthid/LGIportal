@@ -51,7 +51,7 @@ function verifyUserPassword($user,$password)	//input plain text username and pas
 	$username=mysql_real_escape_string($user);
 	$pswd=mysql_real_escape_string($password);
 
-	$query="SELECT passwordHash,salt FROM Users WHERE userId='".$username."'";
+	$query="SELECT passwordHash,salt FROM users WHERE userId='".$username."'";
 	$result=mysql_query($query);
 	if (!$result) {
 		error_log("Error:".mysql_error());
@@ -132,7 +132,7 @@ function getCertificateFile($user)
                     showErrorPage();
           }
           $username=mysql_real_escape_string($user); //$user will already be escaped. But this is for extra safety
-          $query="SELECT certificate FROM Users WHERE userId='".$username."'";
+          $query="SELECT certificate FROM usercertificates WHERE userId='".$username."'";
           $result=mysql_query($query);
           if (!$result) {
                     error_log("Error:".mysql_error());
@@ -176,7 +176,7 @@ function getKeyFile($user)
                     showErrorPage();
           }
           $username=mysql_real_escape_string($user); //$user will already be escaped. But this is for extra safety
-          $query="SELECT userkey FROM Users WHERE userId='".$username."'";
+          $query="SELECT userkey FROM usercertificates WHERE userId='".$username."'";
           $result=mysql_query($query);
           if (!$result) {
                     error_log("Error:".mysql_error());
@@ -204,7 +204,8 @@ function getKeyFile($user)
  */
 function authenticateDigest()
 {
-          $realm = 'Restricted area';
+     
+	 $realm = 'Restricted area';
      
      //user => password
      //TODO: Instead use a database to store usernames and passwords(plain text) 
@@ -216,7 +217,7 @@ function authenticateDigest()
      header('WWW-Authenticate: Digest realm="'.$realm.
                '",qop="auth",nonce="'.uniqid().'",opaque="'.md5($realm).'"');
           //return false;
-     die('Text to send if user hits Cancel button');
+     die('Could not authenticate');
      }
      
      

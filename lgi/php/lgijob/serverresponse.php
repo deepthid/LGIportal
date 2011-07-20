@@ -15,14 +15,46 @@ require_once "XML/Unserializer.php";
 
 class ServerResponse
 {
+	/**
+	 * The name of project server to which job was submitted
+	 * @var string
+	 */
 	private $server;
+	/**
+	 * username of user
+	 * @var string
+	 */
 	private $user;
+	/**
+	 * Group of user 
+	 * @var string
+	 */
 	private $groups;
+	/**
+	 * The project to which job was submitted
+	 * @var string
+	 */
 	private $project;
+	/**
+	 * An array of jobDetails returnes by server. @see JobDetails
+	 * @var array JobDetails
+	 */
 	private $jobs;
+	/**
+	 * Number of jobs in server response
+	 * @var integer
+	 */
 	private $noofjobs;
 
+	/**
+	 * The error number in server response. It will not be initialized if there is no error.
+	 * @var string
+	 */
 	private $errorno;
+	/**
+	 * The error message in server response. It will not be initializes if there is no error.
+	 * @var unknown_type
+	 */
 	private $errormessage;
 
 	public function getServer()
@@ -60,23 +92,28 @@ class ServerResponse
 		return $this->errormessage;
 	}
 
+	/**
+	 * This function initializes this object by parsing the xml string returned from server. Returns true if $xml could be parsed successfully. Otherwise returns false.
+	 * @return boolean
+	 * @param string $xml
+	 */
 	public function parseFromXml($xml)
 	{
 		$us = new XML_Unserializer();
-		$results;
-		if($us->unserialize($xml))
+		$result;
+		if($us->unserialize($xml))	//if xml could be unserialized.
 		{
 			$result=$us->getUnserializedData ( );
 
 
-			if(isset($result['error']))
+			if(isset($result['error']))	//if there is error
 			{
 				$this->errorno=$result['error']['errorno'];
 				$this->errormessage=$result['error']['message'];
 
 			}
 
-			else
+			else	//if there is no error
 			{
 				$this->project=$result['project'];
 				$this->server=$result['project_master_server'];
@@ -87,7 +124,7 @@ class ServerResponse
 				echo "JOBS".$this->noofjobs;
 					
 
-				if($this->noofjobs==1 || $this->noofjobs==0)
+				if($this->noofjobs==1 || $this->noofjobs==0) //if there is only one job in the response
 				{
 					$job=$result['job'];
 					$jobid=$job['job_id'];
@@ -105,7 +142,7 @@ class ServerResponse
 					$jobdetails=new JobDetails($jobid,$application,$owners,$state,$statetimestamp,$target,$jobspecifics,$readaccess,$writeaccess,$input,$output);
 					$this->jobs[0]=$jobdetails;
 				}
-				else
+				else		//if there are more jobs, then result contains an array of jobs.
 				{
 					$jobs=$result['job'];
 
@@ -130,7 +167,7 @@ class ServerResponse
 
 				}
 			}
-			//job_id;
+			
 			return true;
 		}
 		else
@@ -140,6 +177,12 @@ class ServerResponse
 
 }
 
+/**
+ * This class is for job details returned by server.
+ * @author deepthi
+ * @todo Add setter functions
+ *
+ */
 class JobDetails
 {
 

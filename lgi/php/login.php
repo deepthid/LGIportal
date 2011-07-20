@@ -31,7 +31,8 @@ else   //authenticate user
 	$user=strip_tags($_POST['name']); //HTML tags are stripped for preventing cross site scripting. $user is later stored in session.
 	$paswd=$_POST['password'];
 	$valid=verifyUserPassword($user,$paswd);
-	setValidSession($user);
+	if($valid)
+		setValidSession($user);
 	
      }
      else if(strcmp(_AUTH_MECHANISM_,"DIGEST")==0)
@@ -47,7 +48,7 @@ else   //authenticate user
 
      if($valid)
      { 	
-	//user has logged in. Got to home
+	//user has logged in. Go to home
 	header("Location: home.php");
      }
      else

@@ -1,0 +1,58 @@
+--------------------------------------------
+Overview - LGIPortal - Username-Password Authentication Module
+--------------------------------------------
+
+There are four kinds of files.
+     1. php files - which a user directly requests to view
+     2. dwoo templates - which a php file uses to generate html pages
+     3. utilities - php functions used by php files for performing actions such as veryfying user login, session management etc.
+     4. Configuration files - used by system administrator when deploying this application. Admin should specify config details in these files before deploying the application
+
+     php files
+     ----------
+               index.php
+                    contains the login form where user can enter login credentials
+               login.php
+                    gets username and password from index.php and verifies the credentials.
+                    If it is a valid user, page is redirected to home.php. Otherwise it requests for relogin.
+               home.php
+                    It should have the functionalities for a logged in user. Currently it doesnot do anything, but displays a welcome message.
+                    This page should have the options for submiting job, deleting job etc. These features are yet to be added.
+               TODO
+                    submit.php
+                    delete.php
+                    etc.
+
+     dwoo templates
+     --------------
+               home_base.tpl
+                    This is the basic template. It has a title,heading,menu,contents and footer. This template is to be used by the pages visible to user after he logs in such as home.php.
+                    Those pages should only change the contents. This helps to keep same template for all pages. If you need to add more options or menus available to a user edit home_base.tpl and it will be available in all pages.
+               home.tpl
+                    template for home page. Used by home.php
+               login.tpl
+                    template for user login. Used by index.php
+
+     utilities
+     ---------
+               login_utilities.php
+                    This file contains functions for user authentication
+               session.php
+                    This file contains functions for session management.
+               error.php
+                    This file contains functions for error reporting to users.
+     
+     Configuration files
+     -------------------
+               lgi.config.php
+                    This file is located in /lgi. It contains configuration details for deploying this application. It is a php file. Hence all configuration details are specified as php variables. Currently it has only one data - DB_CONFIG_FILE. DB_CONFIG_FILE specifies the "full path" to a file which has database access details. The file specified by DB_CONFIG_FILE is to be in a protected area sicne it has database access detail.
+               db.inc.php
+                    This file contains the database access detail. This file can be renamed and can be anywhere in the system. The location of this file should be specified in lgi.config.php using DB_CONFIG_FILE. This file should be in a protected area where access is restricted. This file should be a php file. The database access details should be given in the following variables
+                    $mysql_server
+                    $mysql_user
+                    $mysql_password
+                    $mysql_dbname
+
+
+
+The system implements a form based user login. The username and hashed passwords are stored in a MYSQL database. Now we use md5 hashing with salt to store password. This can be easily changed. Username and password are compared against the data in database for authenticating a user. When a user is authenticated, a new session is created for that user. Further activities of user uses this session. Application expects an SSL connection between server and client.

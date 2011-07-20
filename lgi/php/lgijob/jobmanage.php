@@ -12,7 +12,7 @@
 
 require_once dirname(__FILE__).'/errors.php';;
 require_once "XML/Unserializer.php";
-require_once "serverresponse.php";
+require_once dirname(__FILE__)."/serverresponse.php";
 
 /**
  * A class for handling job related function such as submitting job, deleteing job etc.
@@ -36,9 +36,23 @@ class Job
 	private $project;
 	private $job_id;
 
+	/**
+	 * Output from executing the command
+	 * @var array
+	 */
 	private $output;
+	
+	/**
+	 * Contains the error numbers of errors occured during execution. Error numbers are described in class Error
+	 * @var array
+	 */
 	private $errorno;
 	private $errortype;	
+	
+	/**
+	 * This contains the response from server.Initialized by function @see parseResults
+	 * @var ServerResponse
+	 */
 	private $response;
 
 
@@ -134,7 +148,7 @@ class Job
 
 	/**
 	 *	Get results of the last operation
-	 *	@return string
+	 *	@return ServerResponse
 	 */
 	public function getResults()
 	{
@@ -142,6 +156,10 @@ class Job
 		return $this->response;
 	}
 
+	/**
+	 * This function parses the xml output from server and sets the results of this object.
+	 * @return boolean
+	 */
 	public function parseResults()
 	{
 		$out="<LGI>";
@@ -154,6 +172,10 @@ class Job
 		 
 	}
 	
+	
+	/**
+	 * Returns the output as string, without parsing the xml.
+	 */
 	public function getResponseString()
 	{
 		$out="";

@@ -25,37 +25,37 @@ if(checkValidSession())
 }
 else   //authenticate user
 {
-     $valid=false;
-     if(strcmp(_AUTH_MECHANISM_,"DATABASE")==0)
-     {
-	$user=strip_tags($_POST['name']); //HTML tags are stripped for preventing cross site scripting. $user is later stored in session.
-	$paswd=$_POST['password'];
-	$valid=verifyUserPassword($user,$paswd);
-	if($valid)
-		setValidSession($user);
-	
-     }
-     else if(strcmp(_AUTH_MECHANISM_,"DIGEST")==0)
-     {    
-          $valid=authenticateDigest();
-     }
-     else
-     {
-          error_log("Configuration Error: Invalid Authentication Mechanism in lgi.config.php");
-          pushErrorMessage("Server Configuration Error. Please contact server administrator");
-          showErrorPage(); 
-     }
+	$valid=false;
+	if(strcmp(_AUTH_MECHANISM_,"DATABASE")==0)
+	{
+		$user=strip_tags($_POST['name']); //HTML tags are stripped for preventing cross site scripting. $user is later stored in session.
+		$paswd=$_POST['password'];
+		$valid=verifyUserPassword($user,$paswd);
+		if($valid)
+			setValidSession($user);
 
-     if($valid)
-     { 	
-	//user has logged in. Go to home
-	header("Location: home.php");
-     }
-     else
-     {
-	//Username or password does not match a valid user. So request for relogin.
-	pushErrorMessage("Invalid username or password. Try Again.");
-	relogin();
-     }
+	}
+	else if(strcmp(_AUTH_MECHANISM_,"DIGEST")==0)
+	{
+		$valid=authenticateDigest();
+	}
+	else
+	{
+		error_log("Configuration Error: Invalid Authentication Mechanism in lgi.config.php");
+		pushErrorMessage("Server Configuration Error. Please contact server administrator");
+		showErrorPage();
+	}
+
+	if($valid)
+	{
+		//user has logged in. Go to home
+		header("Location: home.php");
+	}
+	else
+	{
+		//Username or password does not match a valid user. So request for relogin.
+		pushErrorMessage("Invalid username or password. Try Again.");
+		relogin();
+	}
 }
 ?>

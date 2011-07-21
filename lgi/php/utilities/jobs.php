@@ -7,7 +7,7 @@
  */
 
 /**
- * 
+ *
  */
 require_once 'Dwoo/dwooAutoload.php';
 require_once dirname(__FILE__).'/../../lgi.config.php';
@@ -24,13 +24,19 @@ require_once dirname(__FILE__).'/../utilities/data.php';
 
 function submitJob()
 {
-	
+
 	//Set authentication parameters
 	global $CA_FILE;
 	authenticateUser();
 	$user=$_SESSION['user'];
 	$cert= getCertificateFile($user);
 	$key= getKeyFile($user);
+	if(empty($cert) || empty($key))
+	{
+		pushErrorMessage("You donot have a valid certificate or key. Please contact your system administrator");
+		header("Location: submit.php");
+		die();
+	}
 	$group=$user;
 	$CA=$CA_FILE;
 
@@ -53,29 +59,29 @@ function submitJob()
 	$newjob->setTargetResource($target);
 	$newjob->setJobSpecifics($jobspecifics);
 
-	//submit job	
+	//submit job
 	$errorset=$newjob->submitJob();
-	
+
 	if($errorset) //if there is error
 	{
 		$errors=$newjob->getErrors();
 		if($errorset==ErrorType::INPUTERROR)
 		{
-			foreach ($errors as $i => $value) {				
-				
+			foreach ($errors as $i => $value) {
+
 				pushErrorMessage(Error::$errormessage[$errors[$i]]);
-				
-			}	
-			//redirect to the form with error message					
+
+			}
+			//redirect to the form with error message
 			header("Location: submit.php");
 		}
 		if($errorset==ErrorType::EXECERROR)
 		{
 			/*if($newjob->parseResults())
-			  pushErrorMessage($newjob->getResults()->getErrorMessage());
-			else*/
-			  pushErrorMessage("Could not submit job. Execution Error :". $newjob->getResponseString());
-			//redirect to the form with error message					
+			 pushErrorMessage($newjob->getResults()->getErrorMessage());
+			 else*/
+			pushErrorMessage("Could not submit job. Execution Error :". $newjob->getResponseString());
+			//redirect to the form with error message
 			header("Location: submit.php");
 		}
 	}
@@ -106,42 +112,48 @@ function deleteJob()
 	$user=$_SESSION['user'];
 	$cert= getCertificateFile($user);
 	$key= getKeyFile($user);
+	if(empty($cert) || empty($key))
+	{
+		pushErrorMessage("You donot have a valid certificate or key. Please contact your system administrator");
+		header("Location: delete.php");
+		die();
+	}
 	$group=$user;
 	$CA=$CA_FILE;
 
-	
+
 	$server=$_POST['server'];
 	$project=$_POST['project'];
 	$jobid=$_POST['jobid'];
-	
+
 
 	$newjob=new Job($key,$cert,$CA,$user,$group);
-	
+
 	$newjob->setServer($server);
 	$newjob->setProject($project);
-	
+
 	//delete job
-	
+
 	$errorset=$newjob->deleteJob($jobid);
-	
+
 	if($errorset)
 	{
 		$errors=$newjob->getErrors();
 		if($errorset==ErrorType::INPUTERROR)
 		{
-			foreach ($errors as $i => $value) {				
-				
+			foreach ($errors as $i => $value) {
+
 				pushErrorMessage(Error::$errormessage[$errors[$i]]);
-				
-			}	
-			//redirect to the form with error message					
+
+			}
+			//redirect to the form with error message
 			header("Location: delete.php");
 		}
 		if($errorset==ErrorType::EXECERROR)
 		{
-			
+				
 			pushErrorMessage("Could not Delete job. Execution Error :". $newjob->getResults()->getErrorMessage());
-			//redirect to the form with error message					
+			//redirect to the form with error message
 			header("Location: delete.php");
 		}
 	}
@@ -161,45 +173,51 @@ function viewJob()
 	$user=$_SESSION['user'];
 	$cert= getCertificateFile($user);
 	$key= getKeyFile($user);
+	if(empty($cert) || empty($key))
+	{
+		pushErrorMessage("You donot have a valid certificate or key. Please contact your system administrator");
+		header("Location: viewjob.php"); 
+		die();
+	}
 	$group=$user;
 	$CA=$CA_FILE;
 
-	
+
 	$server=$_POST['server'];
 	$project=$_POST['project'];
 	$jobid=$_POST['jobid'];
-	
+
 
 	$newjob=new Job($key,$cert,$CA,$user,$group);
-	
+
 	$newjob->setServer($server);
 	$newjob->setProject($project);
-	
+
 	//delete job
-	
+
 	$errorset=$newjob->statusJob($jobid);
-	
+
 	if($errorset)
 	{
 		$errors=$newjob->getErrors();
 		if($errorset==ErrorType::INPUTERROR)
 		{
-			foreach ($errors as $i => $value) {				
-				
+			foreach ($errors as $i => $value) {
+
 				pushErrorMessage(Error::$errormessage[$errors[$i]]);
-				
-			}	
-			//redirect to the form with error message					
+
+			}
+			//redirect to the form with error message
 			header("Location: viewjob.php");
 		}
 		if($errorset==ErrorType::EXECERROR)
 		{
-		        if($newjob->parseResults())
-			 		 pushErrorMessage($newjob->getResults()->getErrorMessage());
+			if($newjob->parseResults())
+			pushErrorMessage($newjob->getResults()->getErrorMessage());
 			else
-			  pushErrorMessage("Execution Error :". $newjob->getResponseString());
+			pushErrorMessage("Execution Error :". $newjob->getResponseString());
 			//showErrorPage();
-			//redirect to the form with error message					
+			//redirect to the form with error message
 			header("Location: viewjob.php");
 		}
 	}
@@ -215,63 +233,70 @@ function viewJob()
 	$output['jobOwner']= $job->getOwners();
 	$output['readAccess']= $job->getReadAccess();
 	return $output;
-	
+
 }
 
 function listJobs()
 {
-     global $CA_FILE;
+	global $CA_FILE;
 	authenticateUser();
 	$user=$_SESSION['user'];
 	$cert= getCertificateFile($user);
 	$key= getKeyFile($user);
+	
+if(empty($cert) || empty($key))
+	{
+		pushErrorMessage("You donot have a valid certificate or key. Please contact your system administrator");
+		header("Location: listjobs.php"); 
+		die();
+	}
 	$group=$user;
 	$CA=$CA_FILE;
 
-	
+
 	$server=$_POST['server'];
 	//$project=$_POST['project'];
 	//$jobid=$_POST['jobid'];
-	
+
 
 	$newjob=new Job($key,$cert,$CA,$user,$group);
-	
+
 	$newjob->setServer($server);
 	//$newjob->setProject($project);
-	
+
 	//delete job
-	
+
 	$errorset=$newjob->listJobs();
-	
+
 	if($errorset)
 	{
 		$errors=$newjob->getErrors();
 		if($errorset==ErrorType::INPUTERROR)
 		{
-			foreach ($errors as $i => $value) {				
-				
+			foreach ($errors as $i => $value) {
+
 				pushErrorMessage(Error::$errormessage[$errors[$i]]);
-				
-			}	
-			//redirect to the form with error message					
+
+			}
+			//redirect to the form with error message
 			header("Location: home.php");
 		}
 		if($errorset==ErrorType::EXECERROR)
 		{
-		        if($newjob->parseResults())
-			  pushErrorMessage($newjob->getErrorMessage());
+			if($newjob->parseResults())
+			pushErrorMessage($newjob->getErrorMessage());
 			else
-			  pushErrorMessage("Execution Error :". $newjob->getResults()->getErrorMessage());
+			pushErrorMessage("Execution Error :". $newjob->getResults()->getErrorMessage());
 			//showErrorPage();
-			//redirect to the form with error message					
+			//redirect to the form with error message
 			header("Location: home.php");
 		}
 	}
 	$newjob->parseResults();
 	$result=$newjob->getResults(); // Return an object of serverREsponse
-	$jobs=$result->getJobs();	
+	$jobs=$result->getJobs();
 	$output=array();
-	$j=0;	
+	$j=0;
 	foreach($jobs as $i=>$value)
 	{
 		$output[$j]['jobId']=$jobs[$i]->getJobId();
@@ -279,11 +304,11 @@ function listJobs()
 		$output[$j]['application']=$jobs[$i]->getapplication();
 		$output[$j]['target']=$jobs[$i]->getTargetResources();
 		$output[$j]['jobOwner']= $jobs[$i]->getOwners();
-		$output[$j]['readAccess']= $jobs[$i]->getReadAccess();		
+		$output[$j]['readAccess']= $jobs[$i]->getReadAccess();
 		$j=$j+1;
 	}
 	return $output;
-	
+
 
 }
 ?>

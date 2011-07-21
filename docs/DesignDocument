@@ -18,10 +18,15 @@ There are four kinds of files.
                home.php
                     It should have the functionalities for a logged in user. Currently it doesnot do anything, but displays a welcome message.
                     This page should have the options for submiting job, deleting job etc. These features are yet to be added.
-               TODO
-                    submit.php
-                    delete.php
-                    etc.
+               
+                submit.php
+                        for submitting job to the server.
+                delete.php
+                        For deleting job
+                viewjob.php
+                        For viewing details of job by giving job id
+                listjobs.php
+                        Lists all jobs in a particular project server
 
      dwoo templates
      --------------
@@ -32,15 +37,38 @@ There are four kinds of files.
                     template for home page. Used by home.php
                login.tpl
                     template for user login. Used by index.php
+                    
+               deletesuccess.tpl
+                    Page to display when a job is successfully deleted
+               submit.tpl
+                    Template for the form, to submit a job
+               delete.tpl
+                    Template for the form to delete a job
+               jobdetails.tpl
+                    It displays details of a job.
+               viewjob.tpl
+                    Form for viewing job details.
+               jobslist.tpl
+                    List all jobs with some details.
+               listjobs.tpl
+                        Form for requesting to list all jobs
+               submitsuccess.tpl
+                        Template to see when a job is successfully submitted
+
 
      utilities
      ---------
-               login_utilities.php
-                    This file contains functions for user authentication
-               session.php
-                    This file contains functions for session management.
-               error.php
-                    This file contains functions for error reporting to users.
+                login_utilities.php
+                        This file contains functions for user authentication
+                session.php
+                        This file contains functions for session management.
+                error.php
+                        This file contains functions for error reporting to users.
+                data.php   
+                        This file contains function to manage Dwoo Data. Common data used in all templates can be initialized here.                      
+                jobs.php  
+                        This file contains functions for jobs such as submitting,deleteing,view details etc.
+
      
      Configuration files
      -------------------

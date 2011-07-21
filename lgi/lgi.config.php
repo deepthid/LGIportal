@@ -18,7 +18,7 @@ $CA_FILE="/var/local/home/apache/lgikey/ca.crt";
  *  1. Form based - username and password stored in database
  *  2. HTTP digest authentication
  */
-define('_AUTH_MECHANISM_',"DATABASE");  //Possible "DATABASE","DIGEST"
+define('_AUTH_MECHANISM_',"DIGEST");  //Possible "DATABASE","DIGEST"
 
 /**
  * _LGI_ROOT_ - Defines the root folder where this application is deployed. The path should be with respect to web root.

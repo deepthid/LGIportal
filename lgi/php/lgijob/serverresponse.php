@@ -119,10 +119,8 @@ class ServerResponse
 				$this->server=$result['project_master_server'];
 				$this->user=$result['user'];
 				$this->groups=$result['groups'];
-				$this->noofjobs=intval($result['number_of_jobs']);
-				
-				echo "JOBS".$this->noofjobs;
-					
+				$this->noofjobs=intval($result['number_of_jobs']);				
+								
 
 				if($this->noofjobs==1 || $this->noofjobs==0) //if there is only one job in the response
 				{

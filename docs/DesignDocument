@@ -83,4 +83,25 @@ There are four kinds of files.
 
 
 
-The system implements a form based user login. The username and hashed passwords are stored in a MYSQL database. Now we use md5 hashing with salt to store password. This can be easily changed. Username and password are compared against the data in database for authenticating a user. When a user is authenticated, a new session is created for that user. Further activities of user uses this session. Application expects an SSL connection between server and client.
+The system implements a form based user login. The username and hashed passwords are stored in a MYSQL database. Now we use sha512 hashing with salt to store password. This can be easily changed. Username and password are compared against the data in database for authenticating a user. When a user is authenticated, a new session is created for that user. Further activities of user uses this session. Application expects an SSL connection between server and client.
+There is also an option for http-digest authentication. In this case user details are also stored in database. But password is stored as plaintext.
+
+
+
+------------------------
+Overview lgijob 
+------------------------
+
+This serves as a reusable library which has functions to submit,delete job etc. Now the functions uses LGI_q* commands. Instead it should be rewritten using curl.
+
+This has following classes
+        Job
+                - For submitting a job, deleting a job etc.
+                - An instance of this class can be created with job specific details. The class has methods to submit,delete,view details and list all jobs.
+        ServerResponse
+                - A class to represent response from the server. The xml reponse from the server can be parsed to initialize the instance of this class. 
+        Jobdetails
+                - A class to represent details of a particular job. This class is used in ServerResponse. 
+                
+        Error
+        ErrorType

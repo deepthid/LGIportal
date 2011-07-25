@@ -23,9 +23,8 @@
 			<li><a href="submit.php">Submit Job</a></li>
 			<li><a href="delete.php">Delete Job</a></li>
 			<li><a href="viewjob.php">View Job</a></li>
-			<li><a href="listjobs.php">List all Jobs</a> </li>	
-			
-			
+			<li><a href="listjobs.php">List all Jobs</a> </li>
+			<li><a href="listresources.php">List all Resources</a> </li>				
 		</ul>
 		<div id="user">
 		<li><a href="logout.php">Logout {$user}</a></li>

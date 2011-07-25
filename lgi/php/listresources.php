@@ -1,6 +1,6 @@
 <?php
 /**
- * This is the page for viewing a job details.
+ * This is the page for viewing all resources.
  * @author Deepthi
  */
 
@@ -22,23 +22,21 @@ if(!isset($_POST['submitrequest']))
 	//display form
 	$dwoo = new Dwoo();
 	$data= createDwooData();
-	$dwoo->output('../dwoo/viewjob.tpl', $data);
+	$dwoo->output('../dwoo/listresources.tpl', $data);
 }
 else //request for submit job.
 {
 	$dwoo = new Dwoo();
 	$data=createDwooData();
-	$output=viewJob();
-	
-	//Add more details to $output in viewJob() to get more details. Add them to $data and update jobdetails.tpl	$data->assign('jobId',$output['jobId']);
+	$output=listResources();
+	/*$data->assign('jobId',$output['jobId']);
 	$data->assign('jobStatus',$output['jobStatus']);
 	$data->assign('application',$output['application']);
 	$data->assign('target',$output['target']);
 	$data->assign('jobOwner',$output['jobOwner']);
-	$data->assign('readAccess',$output['readAccess']);
-	
-	$dwoo->output('../dwoo/jobdetails.tpl', $data);
+	$data->assign('readAccess',$output['readAccess']);*/
+	$data->assign('resources',$output);
+	$dwoo->output('../dwoo/resourcedetails.tpl', $data);
 
 }
-
 ?>

@@ -151,7 +151,7 @@ function deleteJob()
 		}
 		if($errorset==ErrorType::EXECERROR)
 		{
-				
+
 			pushErrorMessage("Could not Delete job. Execution Error :". $newjob->getResults()->getErrorMessage());
 			//redirect to the form with error message
 			header("Location: delete.php");
@@ -176,7 +176,7 @@ function viewJob()
 	if(empty($cert) || empty($key))
 	{
 		pushErrorMessage("You donot have a valid certificate or key. Please contact your system administrator");
-		header("Location: viewjob.php"); 
+		header("Location: viewjob.php");
 		die();
 	}
 	$group=$user;
@@ -226,6 +226,8 @@ function viewJob()
 	$jobs=$result->getJobs();
 	$job=$jobs[0];
 	$output=array();
+
+	//Add here to give more details of jobs.
 	$output['jobId']=$job->getJobId();
 	$output['jobStatus']=$job->getState();
 	$output['application']=$job->getapplication();
@@ -243,11 +245,11 @@ function listJobs()
 	$user=$_SESSION['user'];
 	$cert= getCertificateFile($user);
 	$key= getKeyFile($user);
-	
-if(empty($cert) || empty($key))
+
+	if(empty($cert) || empty($key))
 	{
 		pushErrorMessage("You donot have a valid certificate or key. Please contact your system administrator");
-		header("Location: listjobs.php"); 
+		header("Location: listjobs.php");
 		die();
 	}
 	$group=$user;
@@ -305,6 +307,79 @@ if(empty($cert) || empty($key))
 		$output[$j]['target']=$jobs[$i]->getTargetResources();
 		$output[$j]['jobOwner']= $jobs[$i]->getOwners();
 		$output[$j]['readAccess']= $jobs[$i]->getReadAccess();
+		$j=$j+1;
+	}
+	return $output;
+
+
+}
+
+function listResources()
+{
+	global $CA_FILE;
+	authenticateUser();
+	$user=$_SESSION['user'];
+	$cert= getCertificateFile($user);
+	$key= getKeyFile($user);
+
+	if(empty($cert) || empty($key))
+	{
+		pushErrorMessage("You donot have a valid certificate or key. Please contact your system administrator");
+		header("Location: listjobs.php");
+		die();
+	}
+	$group=$user;
+	$CA=$CA_FILE;
+
+
+	$server=$_POST['server'];
+	//$project=$_POST['project'];
+	//$jobid=$_POST['jobid'];
+
+
+	$newjob=new Job($key,$cert,$CA,$user,$group);
+
+	$newjob->setServer($server);
+	//$newjob->setProject($project);
+
+	//delete job
+
+	$errorset=$newjob->listResources();
+
+	if($errorset)
+	{
+		$errors=$newjob->getErrors();
+		if($errorset==ErrorType::INPUTERROR)
+		{
+			foreach ($errors as $i => $value) {
+
+				pushErrorMessage(Error::$errormessage[$errors[$i]]);
+
+			}
+			//redirect to the form with error message
+			header("Location: home.php");
+		}
+		if($errorset==ErrorType::EXECERROR)
+		{
+			if($newjob->parseResults())
+			pushErrorMessage($newjob->getErrorMessage());
+			else
+			pushErrorMessage("Execution Error :". $newjob->getResults()->getErrorMessage());
+			//showErrorPage();
+			//redirect to the form with error message
+			header("Location: home.php");
+		}
+	}
+	$newjob->parseResults();
+	$result=$newjob->getResults(); // Return an object of serverREsponse
+	$resources=$result->getResources();
+	$output=array();
+	$j=0;
+	foreach($resources as $i=>$value)
+	{
+		$output[$j]['name']=$resources[$i]->getResourceName();
+		$output[$j]['capabilities']=$resources[$i]->getCapabilities();
+		$output[$j]['lastcalltime']=$resources[$i]->getLastCallTime();
 		$j=$j+1;
 	}
 	return $output;

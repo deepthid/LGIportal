@@ -599,13 +599,9 @@ class Job
 			//$this=>errortype=ErrorType::INPUTERROR;
 			return $errortype;
 		}
-		$command="/usr/bin/LGI_qstat -L";
+		$command="/usr/bin/LGI_qstat -x -L";
 
-		//TODO : Check whether application is specified, if not raise an error
-		if( isset($this->application))
-		{
-			$command=$command." -a ".escapeshellcmd($this->application);
-		}
+		
 		if( isset($this->keyfile))
 		{
 			$command=$command." -K ".escapeshellcmd($this->keyfile);
@@ -630,11 +626,7 @@ class Job
 		{
 			$command=$command." -G ".escapeshellcmd($this->groups);
 		}
-		if( isset($this->project))
-		{
-			$command=$command." -P ".escapeshellcmd($this->project);
-		}
-		//$command=$command." ".escapeshellcmd($jobid);
+		
 		$res=exec($command,$this->output,$ret);
 		if($ret!=0)
 		{

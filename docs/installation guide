@@ -8,7 +8,9 @@ Requirements
                 http://dwoo.org/                
         4. Pear XML_Serializer package
                 http://pear.php.net/package/XML_Serializer/redirected
-        5. MySQL
+        5. MySQL Server
+        6. LGI Middleware 
+                http://gliteui.wks.gorlaeus.net/LGI/
         
         
 Step 1:- Setting up database
@@ -28,7 +30,8 @@ Step 1:- Setting up database
                         
                         If authentication mechanism is http authentication (See Step 2.3)
                         the table should be 
-                         +--------------+--------------+------+-----+---------+-------+
+                        Table name: digestusers
+                        +--------------+--------------+------+-----+---------+-------+
                         | Field        | Type         | Null | Key | Default | Extra |
                         +--------------+--------------+------+-----+---------+-------+
                         | userId       | varchar(20)  | NO   | PRI | NULL    |       | 

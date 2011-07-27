@@ -30,7 +30,8 @@ else //request for submit job.
 	$data=createDwooData();
 	$output=viewJob();
 	
-	//Add more details to $output in viewJob() to get more details. Add them to $data and update jobdetails.tpl	$data->assign('jobId',$output['jobId']);
+	//Add more details to $output in viewJob() to get more details. Add them to $data and update jobdetails.tpl	
+	$data->assign('jobId',$output['jobId']);
 	$data->assign('jobStatus',$output['jobStatus']);
 	$data->assign('application',$output['application']);
 	$data->assign('target',$output['target']);

@@ -114,14 +114,17 @@ class ServerResponse
 		$result;
 		if($us->unserialize($xml))	//if xml could be unserialized.
 		{
-			$result=$us->getUnserializedData ( );
-
+			$resultArray=$us->getUnserializedData ( );
+			$result=$resultArray;
+			if(isset($resultArray['response']))
+			{
+				$result=$resultArray['response'];
+			}
 
 			if(isset($result['error']))	//if there is error
 			{
-				$this->errorno=$result['error']['errorno'];
+				$this->errorno=$result['error']['number'];
 				$this->errormessage=$result['error']['message'];
-
 			}
 
 			else	//if there is no error
@@ -202,7 +205,7 @@ class ServerResponse
 						$this->resources[0]=$newresource;
 					}
 				}
-				else		//if there are more resources, then result contains an array of jobs.
+				else if($this->noofresource!=0)		//if there are more resources, then result contains an array of jobs.
 				{
 					$resourcelists=$result['resource'];
 

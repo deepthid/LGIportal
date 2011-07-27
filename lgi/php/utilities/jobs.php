@@ -17,6 +17,8 @@ require_once dirname(__FILE__).'/../utilities/errors.php';
 require_once dirname(__FILE__).'/../utilities/login_utilities.php';
 require_once dirname(__FILE__).'/../utilities/data.php';
 
+//require_once dirname(__FILE__).'/../lgijob/curltest.php';
+
 /**
  * Function for submitting job. It takes parameters from POST variables and use the class Job for submitting job.
  * @return string output
@@ -62,41 +64,25 @@ function submitJob()
 	//submit job
 	$errorset=$newjob->submitJob();
 
-	if($errorset) //if there is error
+	if($errorset)
 	{
-		$errors=$newjob->getErrors();
-		if($errorset==ErrorType::INPUTERROR)
-		{
-			foreach ($errors as $i => $value) {
-
-				pushErrorMessage(Error::$errormessage[$errors[$i]]);
-
-			}
-			//redirect to the form with error message
-			header("Location: submit.php");
-		}
-		if($errorset==ErrorType::EXECERROR)
-		{
-			/*if($newjob->parseResults())
-			 pushErrorMessage($newjob->getResults()->getErrorMessage());
-			 else*/
-			pushErrorMessage("Could not submit job. Execution Error :". $newjob->getResponseString());
-			//redirect to the form with error message
-			header("Location: submit.php");
-		}
+		$error=$newjob->getError();
+		handleError($error,"submit.php");
 	}
-	$newjob->parseResults();
-	$result=$newjob->getResults(); // Return an object of serverREsponse
-	$jobs=$result->getJobs();
-	$job=$jobs[0];
-	$output=array();
-	$output['jobId']=$job->getJobId();
-	$output['jobStatus']=$job->getState();
-	$output['application']=$job->getapplication();
-	$output['target']=$job->getTargetResources();
-	$output['jobOwner']= $job->getOwners();
-	$output['readAccess']= $job->getReadAccess();
-	return $output;
+	else
+	{
+		$result=$newjob->getResults(); // Return an object of serverREsponse
+		$jobs=$result->getJobs();
+		$job=$jobs[0];
+		$output=array();
+		$output['jobId']=$job->getJobId();
+		$output['jobStatus']=$job->getState();
+		$output['application']=$job->getapplication();
+		$output['target']=$job->getTargetResources();
+		$output['jobOwner']= $job->getOwners();
+		$output['readAccess']= $job->getReadAccess();
+		return $output;
+	}
 }
 
 /**
@@ -138,27 +124,16 @@ function deleteJob()
 
 	if($errorset)
 	{
-		$errors=$newjob->getErrors();
-		if($errorset==ErrorType::INPUTERROR)
-		{
-			foreach ($errors as $i => $value) {
-
-				pushErrorMessage(Error::$errormessage[$errors[$i]]);
-
-			}
-			//redirect to the form with error message
-			header("Location: delete.php");
-		}
-		if($errorset==ErrorType::EXECERROR)
-		{
-
-			pushErrorMessage("Could not Delete job. Execution Error :". $newjob->getResults()->getErrorMessage());
-			//redirect to the form with error message
-			header("Location: delete.php");
-		}
+		$error=$newjob->getError();
+		handleError($error,"delete.php");
 	}
-	$output=$newjob->getResponseString();
-	return $output;
+	else
+	{
+		$output=$newjob->getResults();
+		$jobs=$output->getJobs();
+		$job=$jobs[0];
+		return "Job ".$job->getJobId()." is ".$job->getState()." from server ".$output->getServer();
+	}
 }
 
 /**
@@ -197,45 +172,29 @@ function viewJob()
 
 	$errorset=$newjob->statusJob($jobid);
 
+
 	if($errorset)
 	{
-		$errors=$newjob->getErrors();
-		if($errorset==ErrorType::INPUTERROR)
-		{
-			foreach ($errors as $i => $value) {
-
-				pushErrorMessage(Error::$errormessage[$errors[$i]]);
-
-			}
-			//redirect to the form with error message
-			header("Location: viewjob.php");
-		}
-		if($errorset==ErrorType::EXECERROR)
-		{
-			if($newjob->parseResults())
-			pushErrorMessage($newjob->getResults()->getErrorMessage());
-			else
-			pushErrorMessage("Execution Error :". $newjob->getResponseString());
-			//showErrorPage();
-			//redirect to the form with error message
-			header("Location: viewjob.php");
-		}
+		$error=$newjob->getError();
+		handleError($error,"viewjob.php");
 	}
-	$newjob->parseResults();
-	$result=$newjob->getResults(); // Return an object of serverREsponse
-	$jobs=$result->getJobs();
-	$job=$jobs[0];
-	$output=array();
+	else
+	{
+		$result=$newjob->getResults(); // Return an object of serverREsponse
+		$jobs=$result->getJobs();
+		$job=$jobs[0];
+		$output=array();
 
-	//Add here to give more details of jobs.
-	$output['jobId']=$job->getJobId();
-	$output['jobStatus']=$job->getState();
-	$output['application']=$job->getapplication();
-	$output['target']=$job->getTargetResources();
-	$output['jobOwner']= $job->getOwners();
-	$output['readAccess']= $job->getReadAccess();
-	return $output;
+		//Add here to give more details of jobs.
+		$output['jobId']=$job->getJobId();
+		$output['jobStatus']=$job->getState();
+		$output['application']=$job->getapplication();
+		$output['target']=$job->getTargetResources();
+		$output['jobOwner']= $job->getOwners();
+		$output['readAccess']= $job->getReadAccess();
+		return $output;
 
+	}
 }
 
 function listJobs()
@@ -272,45 +231,29 @@ function listJobs()
 
 	if($errorset)
 	{
-		$errors=$newjob->getErrors();
-		if($errorset==ErrorType::INPUTERROR)
-		{
-			foreach ($errors as $i => $value) {
-
-				pushErrorMessage(Error::$errormessage[$errors[$i]]);
-
-			}
-			//redirect to the form with error message
-			header("Location: home.php");
-		}
-		if($errorset==ErrorType::EXECERROR)
-		{
-			if($newjob->parseResults())
-			pushErrorMessage($newjob->getErrorMessage());
-			else
-			pushErrorMessage("Execution Error :". $newjob->getResults()->getErrorMessage());
-			//showErrorPage();
-			//redirect to the form with error message
-			header("Location: home.php");
-		}
+		$error=$newjob->getError();
+		handleError($error,"listjobs.php");
 	}
-	$newjob->parseResults();
-	$result=$newjob->getResults(); // Return an object of serverREsponse
-	$jobs=$result->getJobs();
-	$output=array();
-	$j=0;
-	foreach($jobs as $i=>$value)
+	else
 	{
-		$output[$j]['jobId']=$jobs[$i]->getJobId();
-		$output[$j]['jobStatus']=$jobs[$i]->getState();
-		$output[$j]['application']=$jobs[$i]->getapplication();
-		$output[$j]['target']=$jobs[$i]->getTargetResources();
-		$output[$j]['jobOwner']= $jobs[$i]->getOwners();
-		$output[$j]['readAccess']= $jobs[$i]->getReadAccess();
-		$j=$j+1;
-	}
-	return $output;
 
+		$result=$newjob->getResults(); // Return an object of serverREsponse
+		$jobs=$result->getJobs();
+		$output=array();
+		$j=0;
+		foreach($jobs as $i=>$value)
+		{
+			$output[$j]['jobId']=$jobs[$i]->getJobId();
+			$output[$j]['jobStatus']=$jobs[$i]->getState();
+			$output[$j]['application']=$jobs[$i]->getapplication();
+			$output[$j]['target']=$jobs[$i]->getTargetResources();
+			$output[$j]['jobOwner']= $jobs[$i]->getOwners();
+			$output[$j]['readAccess']= $jobs[$i]->getReadAccess();
+			$j=$j+1;
+		}
+		return $output;
+
+	}
 
 }
 
@@ -336,7 +279,6 @@ function listResources()
 	//$project=$_POST['project'];
 	//$jobid=$_POST['jobid'];
 
-
 	$newjob=new Job($key,$cert,$CA,$user,$group);
 
 	$newjob->setServer($server);
@@ -348,42 +290,35 @@ function listResources()
 
 	if($errorset)
 	{
-		$errors=$newjob->getErrors();
-		if($errorset==ErrorType::INPUTERROR)
-		{
-			foreach ($errors as $i => $value) {
-
-				pushErrorMessage(Error::$errormessage[$errors[$i]]);
-
-			}
-			//redirect to the form with error message
-			header("Location: home.php");
-		}
-		if($errorset==ErrorType::EXECERROR)
-		{
-			if($newjob->parseResults())
-			pushErrorMessage($newjob->getErrorMessage());
-			else
-			pushErrorMessage("Execution Error :". $newjob->getResults()->getErrorMessage());
-			//showErrorPage();
-			//redirect to the form with error message
-			header("Location: home.php");
-		}
+		$error=$newjob->getError();
+		handleError($error,"listresources.php");
 	}
-	$newjob->parseResults();
-	$result=$newjob->getResults(); // Return an object of serverREsponse
-	$resources=$result->getResources();
-	$output=array();
-	$j=0;
-	foreach($resources as $i=>$value)
+	else
 	{
-		$output[$j]['name']=$resources[$i]->getResourceName();
-		$output[$j]['capabilities']=$resources[$i]->getCapabilities();
-		$output[$j]['lastcalltime']=$resources[$i]->getLastCallTime();
-		$j=$j+1;
+		$result=$newjob->getResults(); // Return an object of serverREsponse
+		$resources=$result->getResources();
+		$output=array();
+		$j=0;
+		foreach($resources as $i=>$value)
+		{
+			$output[$j]['name']=$resources[$i]->getResourceName();
+			$output[$j]['capabilities']=$resources[$i]->getCapabilities();
+			$output[$j]['lastcalltime']=$resources[$i]->getLastCallTime();
+			$j=$j+1;
+		}
+		return $output;
 	}
-	return $output;
 
 
+}
+
+
+
+function handleError($error,$redirect)
+{
+
+	$errormessage=$error->getErrorString();
+	pushErrorMessage($errormessage);
+	header("Location: ".$redirect);
 }
 ?>

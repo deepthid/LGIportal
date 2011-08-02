@@ -14,6 +14,12 @@ require_once dirname(__FILE__).'/errors.php';;
 require_once "XML/Unserializer.php";
 require_once "XML/Serializer.php";
 
+/**
+ * This class stores the response from the project server. 
+ * @author deepthi
+ *
+ */
+
 class ServerResponse
 {
 	/**
@@ -47,7 +53,15 @@ class ServerResponse
 	 */
 	private $noofjobs;
 
+	/**
+	 * Number of resources in server response
+	 * @var integer
+	 */
 	private $noofresources;
+	/**
+	 * An array of resources returned by server
+	 * @var Resource
+	 */
 	private $resources;
 	/**
 	 * The error number in server response. It will not be initialized if there is no error.
@@ -59,45 +73,75 @@ class ServerResponse
 	 * @var unknown_type
 	 */
 	private $errormessage;
+	
+	/**
+	 * @return string
+	 */
 
 	public function getServer()
 	{
 		return $this->server;
 	}
+	/**
+	 * @return string
+	 */
 	public function getUser()
 	{
-
 		return $this->user;
 	}
+	/**
+	 * @return string
+	 */
 	public function getGroups()
 	{
 		return $this->groups;
 	}
+	/**
+	 * @return string
+	 */
 	public function getProject()
 	{
 		return $this->project;
 	}
+	/**
+	 * @return array Jobdetails
+	 */
 	public function getJobs()
 	{
 		return $this->jobs;
 	}
+	/**
+	 * @return integer
+	 */
 	public function getNoOfJobs()
 	{
 		return $this->noofjobs;
 	}
+	/**
+	 * @return array Resource
+	 */
 	public function getResources()
 	{
 		return $this->resources;
 	}
+	/**
+	 * @return integer
+	 */
 	public function getNoOfResources()
 	{
 		return $this->noofresources;
 	}
+	/**
+	 * @return string
+	 */
 	public function getErrorNo()
 	{
 
 		return $this->errorno;
 	}
+	/**
+	 * @return string
+	 */
 	public function getErrorMessage()
 	{
 		return $this->errormessage;
@@ -110,6 +154,8 @@ class ServerResponse
 	 */
 	public function parseFromXml($xml)
 	{
+		//TODO : Unset all data members before parsing.
+		
 		$us = new XML_Unserializer();
 		$result;
 		if($us->unserialize($xml))	//if xml could be unserialized.

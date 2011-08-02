@@ -16,7 +16,7 @@ require_once dirname(__FILE__)."/serverresponse.php";
 
 /**
  * A class for handling job related function such as submitting job, deleteing job etc.
- * @author deepthi  
+ * @author deepthi
  */
 class Job
 {
@@ -48,11 +48,11 @@ class Job
 	private $response;
 
 	/**
-	 * Contains the Error details occured during execution. Error numbers are described in class Error. 
-	 * The error should be set by each operation. Each error will overwrite previous error. 
+	 * Contains the Error details occured during execution. Error numbers are described in class Error.
+	 * The error should be set by each operation. Each error will overwrite previous error.
 	 * @var Error
 	 */
-	private $error; //instance of Error
+	private $error; 
 
 	/**
 	 * Handle for CURL operations
@@ -70,8 +70,8 @@ class Job
 		$this->user=$user;
 		$this->groups=$groups;
 		//$this->project=$project;
-		$this->error=new Error();
-		$this->targetresources="any";
+		$this->error=new Error();		//initialize error object
+		$this->targetresources="any";	//default
 	}
 
 	public function setGroups($groups)
@@ -180,13 +180,13 @@ class Job
 	 */
 	public function getResponseString()
 	{
-		
+
 		return $this->output;
 	}
 
 
 	/**
-	 * Setup cURL for operations. It sets necessary curl options for contacting a project server. 
+	 * Setup cURL for operations. It sets necessary curl options for contacting a project server.
 	 * @param string $posturl
 	 */
 	private function setUpcURL($posturl)
@@ -202,11 +202,11 @@ class Job
 		curl_setopt($this->cURLhandle,CURLOPT_VERBOSE, false );
 		curl_setopt($this->cURLhandle,CURLOPT_NOPROGRESS, true);
 			
-		
+
 	}
 
 	/**
-	 * call back function for writing the response from server 
+	 * call back function for writing the response from server
 	 * @param $cURLhandle
 	 * @param $responsedata
 	 */
@@ -223,14 +223,17 @@ class Job
 	 */
 	private function cURLpost($postArray)
 	{
+		//set up post data
 		$postlist="";
 		foreach($postArray as $key=>$value) { $postlist .= $key.'='.urlencode($value).'&'; }
 		rtrim($postlist,'&');
 		curl_setopt($this->cURLhandle,CURLOPT_POST,count($postArray));
 		curl_setopt($this->cURLhandle,CURLOPT_POSTFIELDS,$postlist);
 
+		//Set up the storage for response from server
 		curl_setopt($this->cURLhandle, CURLOPT_WRITEFUNCTION, array($this, "responseWrite"));
 
+		//Perform request to server
 		$result = curl_exec($this->cURLhandle);
 		return $result;
 		//check what is the result
@@ -256,7 +259,8 @@ class Job
 
 	public function deleteJob($jobid)
 	{
-		$errortype=0;
+		$errortype=ErrorType::NOERROR;
+		//Check whether all necessary parameters are set
 		$errortype=$this->validateCommonData();
 		if($errortype)
 		{
@@ -268,19 +272,24 @@ class Job
 			return ErrorType::INPUTERROR;
 		}
 		$postArray=array("job_id" => $jobid);
+		//First setup cURL
 		$this->setUpcURL("/interfaces/interface_delete_job.php");
+		//Second setup Post data
 		$this->setCommonPostData($postArray);
+		//Then perform cURL operation
 		$ret=$this->cURLpost($postArray);
-		//echo htmlspecialchars($this->output);
-		//die();
-		if(!$ret)
+
+		if(!$ret)	//if $ret not 0, there was some error in cURL execution. See cURL error no to know what error it was
 		{
 			$errortype=ErrorType::CURLERROR;
 			$this->error->setError(curl_errno($this->cURLhandle),ErrorType::CURLERROR,curl_error($this->cURLhandle));
 		}
 		else
 		{
+			//There was no error. Parse xml response from server
 			$this->parseResults();
+				
+			//Check whether response has set some error
 			$errorno=$this->response->getErrorNo();
 			if(!empty($errorno))  //error in response message
 			{
@@ -292,6 +301,11 @@ class Job
 
 	}
 
+	/**
+	 * Gives the details of a job given $jobid
+	 * @param string $jobid
+	 * @return int type of error occured while deleting the job
+	 */
 
 	public function statusJob($jobid)
 	{
@@ -310,8 +324,7 @@ class Job
 		$this->setUpcURL("/interfaces/interface_job_state.php");
 		$this->setCommonPostData($postArray);
 		$ret=$this->cURLpost($postArray);
-		//echo htmlspecialchars($this->output);
-		//die();
+
 		if(!$ret)
 		{
 			$errortype=ErrorType::CURLERROR;
@@ -323,7 +336,7 @@ class Job
 			$errorno=$this->response->getErrorNo();
 			if(!empty($errorno))  //error in response message
 			{
-				
+
 				$this->error->setError(Error::RESPONSE,ErrorType::RESPONSEERROR,$this->response->getErrorMessage());
 				return ErrorType::RESPONSEERROR;
 			}
@@ -332,6 +345,10 @@ class Job
 
 	}
 
+	/**
+	 * Submit job to the project server. The parameters are set as class members.
+	 * @return int type of error occured while submitting the job
+	 */
 	public function submitJob()
 	{
 		$errortype=0;
@@ -344,19 +361,19 @@ class Job
 		{
 			$this->error->setError(Error::NOAPPLICATION,ErrorType::INPUTERROR);
 			return ErrorType::INPUTERROR;
-		}	
+		}
 		$postArray=array("application" => $this->application);
 		if( isset($this->targetresources))
 		{
 			$postArray["target_resources"] = $this->targetresources;
-		}		
+		}
 		if( isset($this->jobspecifics))
 		{
 			$postArray["job_specifics"]= $this->jobspecifics;
 		}
 		if( isset($this->inputefile))
 		{
-			//$command=$command." -s ".$;
+			//TODO
 		}
 		if( isset($this->readaccesslist))
 		{
@@ -365,7 +382,7 @@ class Job
 		if( isset($this->writeaccesslist))
 		{
 			$postArray["write_access"]= $this->writeaccesslist;
-		}		
+		}
 		$this->setUpcURL("/interfaces/interface_submit_job.php");
 		$this->setCommonPostData($postArray);
 		$ret=$this->cURLpost($postArray);
@@ -382,7 +399,7 @@ class Job
 			$errorno=$this->response->getErrorNo();
 			if(!empty($errorno))  //error in response message
 			{
-				
+
 				$this->error->setError(Error::RESPONSE,ErrorType::RESPONSEERROR,$this->response->getErrorMessage());
 				return ErrorType::RESPONSEERROR;
 			}
@@ -390,8 +407,12 @@ class Job
 		return $errortype;
 	}
 
-	
-public function listJobs()
+	/**
+	 * List all jobs in given project server
+	 * @return int type of error occured while requesting job details
+	 */
+
+	public function listJobs()
 	{
 		$errortype=0;
 		$errortype=$this->validateCommonData();
@@ -399,7 +420,7 @@ public function listJobs()
 		{
 			return $errortype;
 		}
-		
+
 		$this->setUpcURL("/interfaces/interface_job_state.php");
 		$this->setCommonPostData($postArray);
 		$ret=$this->cURLpost($postArray);
@@ -423,8 +444,12 @@ public function listJobs()
 		return $errortype;
 
 	}
-	
-public function listResources()
+
+	/**
+	 * List all resources in a server
+	 * @return int type of error occured while requesting resource details
+	 */
+	public function listResources()
 	{
 		$errortype=0;
 		$errortype=$this->validateCommonData();
@@ -432,7 +457,7 @@ public function listResources()
 		{
 			return $errortype;
 		}
-		
+
 		$this->setUpcURL("/interfaces/interface_project_resource_list.php");
 		$this->setCommonPostData($postArray);
 		$ret=$this->cURLpost($postArray);
@@ -456,6 +481,12 @@ public function listResources()
 		return $errortype;
 
 	}
+
+	/**
+	 * Check whether all necessary parameters are set. Set error number in $error of this instance
+	 * if any of the required parameters such as key,certficate,CA,server,user or groups are not set.
+	 * @return int error type occured
+	 */
 	private function validateCommonData()
 	{
 		$errortype=0;

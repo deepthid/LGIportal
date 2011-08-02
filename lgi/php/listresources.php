@@ -24,7 +24,7 @@ if(!isset($_POST['submitrequest']))
 	$data= createDwooData();
 	$dwoo->output('../dwoo/listresources.tpl', $data);
 }
-else //request for submit job.
+else //request for viewing all resources.
 {
 	$dwoo = new Dwoo();
 	$data=createDwooData();

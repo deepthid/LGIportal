@@ -17,7 +17,7 @@ require_once dirname(__FILE__).'/../utilities/errors.php';
 require_once dirname(__FILE__).'/../utilities/login_utilities.php';
 require_once dirname(__FILE__).'/../utilities/data.php';
 
-//require_once dirname(__FILE__).'/../lgijob/curltest.php';
+
 
 /**
  * Function for submitting job. It takes parameters from POST variables and use the class Job for submitting job.
@@ -29,17 +29,18 @@ function submitJob()
 
 	//Set authentication parameters
 	global $CA_FILE;
+	//check whether the user is authenticated
 	authenticateUser();
 	$user=$_SESSION['user'];
 	$cert= getCertificateFile($user);
 	$key= getKeyFile($user);
 	if(empty($cert) || empty($key))
 	{
-		pushErrorMessage("You donot have a valid certificate or key. Please contact your system administrator");
+		pushErrorMessage("You donot have a valid certificate or key. Please contact System administrator");
 		header("Location: submit.php");
 		die();
 	}
-	$group=$user;
+	$group=$user;		//TODO : verify what to set for groups
 	$CA=$CA_FILE;
 
 	//Get inputs from user
@@ -67,7 +68,7 @@ function submitJob()
 	if($errorset)
 	{
 		$error=$newjob->getError();
-		handleError($error,"submit.php");
+		handleError($error,"submit.php");	
 	}
 	else
 	{
@@ -113,13 +114,13 @@ function deleteJob()
 	$jobid=$_POST['jobid'];
 
 
+	//create instance of Job
 	$newjob=new Job($key,$cert,$CA,$user,$group);
 
 	$newjob->setServer($server);
 	$newjob->setProject($project);
 
 	//delete job
-
 	$errorset=$newjob->deleteJob($jobid);
 
 	if($errorset)
@@ -168,7 +169,7 @@ function viewJob()
 	$newjob->setServer($server);
 	$newjob->setProject($project);
 
-	//delete job
+	//view status
 
 	$errorset=$newjob->statusJob($jobid);
 
@@ -217,16 +218,13 @@ function listJobs()
 
 	$server=$_POST['server'];
 	//$project=$_POST['project'];
-	//$jobid=$_POST['jobid'];
-
-
+	
 	$newjob=new Job($key,$cert,$CA,$user,$group);
 
 	$newjob->setServer($server);
 	//$newjob->setProject($project);
 
-	//delete job
-
+	//get details of jobs
 	$errorset=$newjob->listJobs();
 
 	if($errorset)
@@ -237,7 +235,7 @@ function listJobs()
 	else
 	{
 
-		$result=$newjob->getResults(); // Return an object of serverREsponse
+		$result=$newjob->getResults(); // Return an object of ServerResponse
 		$jobs=$result->getJobs();
 		$output=array();
 		$j=0;
@@ -284,8 +282,7 @@ function listResources()
 	$newjob->setServer($server);
 	//$newjob->setProject($project);
 
-	//delete job
-
+	//get details of all resources
 	$errorset=$newjob->listResources();
 
 	if($errorset)
@@ -312,8 +309,11 @@ function listResources()
 
 }
 
-
-
+/**
+ * Function to be called when an error encountered while requesting to the project server
+ * @param Error $error
+ * @param string $redirect url to which the page should be redirected after handling error
+ */
 function handleError($error,$redirect)
 {
 

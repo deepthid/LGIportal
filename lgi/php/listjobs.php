@@ -24,17 +24,12 @@ if(!isset($_POST['submitrequest']))
 	$data= createDwooData();
 	$dwoo->output('../dwoo/listjobs.tpl', $data);
 }
-else //request for submit job.
+else //request for getting all job details.
 {
 	$dwoo = new Dwoo();
 	$data=createDwooData();
-	$output=listJobs();
-	/*$data->assign('jobId',$output['jobId']);
-	$data->assign('jobStatus',$output['jobStatus']);
-	$data->assign('application',$output['application']);
-	$data->assign('target',$output['target']);
-	$data->assign('jobOwner',$output['jobOwner']);
-	$data->assign('readAccess',$output['readAccess']);*/
+	$output=listJobs(); //$output is an array containing details of all jobs
+	
 	$data->assign('jobs',$output);
 	$dwoo->output('../dwoo/jobslist.tpl', $data);
 

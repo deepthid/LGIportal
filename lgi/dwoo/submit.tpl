@@ -40,6 +40,7 @@
         			 	<li>
         			 		<input type="submit" value="Submit Job" />
         			 		<input type="hidden" value="request" name="submitrequest"/>
+        			 		<input type="hidden" value={$nonce} name="nonce"/>
         			 	</li>
         			 </ol>
 				</fieldset>

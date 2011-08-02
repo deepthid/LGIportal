@@ -65,9 +65,9 @@ There are four kinds of files.
                 error.php
                         This file contains functions for error reporting to users.
                 data.php   
-                        This file contains function to manage Dwoo Data. Common data used in all templates can be initialized here.                      
+                        This file contains function to manage Dwoo Data. Common data used in all templates can be initialized here.
                 jobs.php  
-                        This file contains functions for jobs such as submitting,deleteing,view details etc.
+                        This file contains functions for jobs such as submitting,deleteing,view details etc. These functions are called by the main php files submit.php,delete.php, viewjob.php etc.
 
      
      Configuration files
@@ -92,8 +92,7 @@ There is also an option for http-digest authentication. In this case user detail
 Overview lgijob 
 ------------------------
 
-This serves as a reusable library which has functions to submit,delete job etc. Now the functions uses LGI_q* commands. Instead it should be rewritten using curl.
-
+This serves as a library which has functions to submit,delete job etc. The functions use libcURL to communicate with the server and do the operations.
 This has following classes
         Job
                 - For submitting a job, deleting a job etc.
@@ -103,5 +102,6 @@ This has following classes
         Jobdetails
                 - A class to represent details of a particular job. This class is used in ServerResponse. 
                 
-        Error
-        ErrorType
+        Error   - Represents an error occured when requesting to the lgi server. 
+        
+        ErrorType - Acts as an enumeration for different types of error.
